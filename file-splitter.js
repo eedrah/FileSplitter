@@ -6,7 +6,6 @@ var fileName = process.argv[2];
 var file = fs.createReadStream(fileName);
 var fileNameExt = fileName.split('.')[fileName.split('.').length -1];
 
-var currentlyCollecting = false;
 var outputFileName = '';
 var outputLines = [];
 
@@ -16,31 +15,23 @@ file
         {objectMode: true},
         function (lineChars, _, next){
             var line = lineChars.toString();
-            if (line) {
-                currentlyCollecting = true;
-                outputLines.push(line);
-                if (line.substring(0,4) === 'var ') {
-                    outputFileName = line.split(' ')[1];
-                }
-            } else {
-                if (currentlyCollecting) {
-                    currentlyCollecting = false;
-                    this.push({
-                        fileName: outputFileName,
-                        content: outputLines.join('\n') + '\n'
-                    });
-                    outputLines = [];
-                }
-            }
-            next();
-        },
-        function (next) {
-            if (currentlyCollecting) {
+            if (line && line.substring(0,4) === 'var ') {
                 this.push({
                     fileName: outputFileName,
                     content: outputLines.join('\n') + '\n'
                 });
+
+                outputFileName = line.split(' ')[1];
+                outputLines = [];
             }
+            outputLines.push(line);
+            next();
+        },
+        function (next) {
+            this.push({
+                fileName: outputFileName,
+                content: outputLines.join('\n') + '\n'
+            });
             next();
         }
     ))
