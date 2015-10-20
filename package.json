@@ -1,0 +1,15 @@
+{
+  "name": "file-splitter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "file-splitter.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "split": "^1.0.0",
+    "through2": "^2.0.0"
+  }
+}
